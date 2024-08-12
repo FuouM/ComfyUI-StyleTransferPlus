@@ -10,7 +10,7 @@ Click name to jump to workflow
 
 All nodes support batched input (i.e video) but is generally not recommended. One should generate 1 or 2 style frames (start and end), then use [ComfyUI-EbSynth](https://github.com/FuouM/ComfyUI-EbSynth) to propagate the style to the entire video.
 
-| Neural Neighbor (2020-2022) - Slowest | CAST (2022) - Fast | X |
+| Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast | X |
 |:-:|:-:|-|
 |![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) | X | 
 
