@@ -12,10 +12,18 @@ import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
+from .module_cast.cast_model import inference_ucast
+
+from .constants import (
+    CAST_DEFAULT,
+    CAST_NET_AE_PATH,
+    CAST_NET_DEC_B_PATH,
+    CAST_TYPES,
+    CAST_VGG_PATH,
+)
+
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
 
-# from .constants import (
-# )
 
 base_dir = Path(__file__).resolve().parent
 
@@ -99,24 +107,52 @@ class NeuralNeighbor:
         return (torch.cat(result, dim=0),)
 
 
-# def inference_realviformer(images: torch.Tensor, model: RealViformer) -> torch.Tensor:
-#     padded = False
-#     with torch.no_grad():
-#         h, w = images.shape[-2:]
-#         ah, aw = h % 4, w % 4
-#         padh = 0 if ah == 0 else 4 - ah
-#         padw = 0 if aw == 0 else 4 - aw
-#         if padh != 0 or padw != 0:
-#             padded = True
-#             images = F.pad(
-#                 images.squeeze(0), pad=(padw, 0, padh, 0), mode="reflect"
-#             ).unsqueeze(0)
-#         outputs = model(images)
+class CAST:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "model_arch": (CAST_TYPES, {"default": CAST_DEFAULT}),
+            },
+        }
 
-#     if padded:
-#         outputs = outputs[..., padh * 4 :, padw * 4 :]
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("res_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
 
-#     return outputs
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        model_arch: str,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        params = {
+            "style_img": style_img,
+            "device": device,
+            "ckpt_ae": f"{base_dir}/models/{model_arch}_model/{CAST_NET_AE_PATH}",
+            "ckpt_decB": f"{base_dir}/models/{model_arch}_model/{CAST_NET_DEC_B_PATH}",
+            "vgg_path": f"{base_dir}/{CAST_VGG_PATH}",
+        }
+
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+
+        result: list[torch.Tensor] = []
+        with torch.inference_mode(mode=False):
+            for i in range(num_frames):
+                params["src_img"] = src_img[i].unsqueeze(0)
+                res_tensor = inference_ucast(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
+                pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
 
 
 # class RealViFormerSR:

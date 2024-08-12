@@ -3,16 +3,16 @@ Advanced Non-Diffusion-based Style Transfer in ComfyUI
 
 Click name to jump to workflow
 
-1. [Neural Neighbor](#neural-neighbor). Paper: [Neural Neighbor Style Transfer](https://github.com/nkolkin13/NeuralNeighborStyleTransfer) 
-
+1. [**Neural Neighbor**](#neural-neighbor). Paper: [Neural Neighbor Style Transfer](https://github.com/nkolkin13/NeuralNeighborStyleTransfer) 
+2. [**CAST**](#cast). Paper: [A Unified Arbitrary Style Transfer Framework via Adaptive Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
 
 ## Workflows
 
 All nodes support batched input (i.e video) but is generally not recommended. One should generate 1 or 2 style frames (start and end), then use [ComfyUI-EbSynth](https://github.com/FuouM/ComfyUI-EbSynth) to propagate the style to the entire video.
 
-| Neural Neighbor | X | X |
-|:-:|-|-|
-|![neural_neighbor](example_outputs/neural_neighbor.png) | X | X | X
+| Neural Neighbor (2020-2022) - Slowest | CAST (2022) - Fast | X |
+|:-:|:-:|-|
+|![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) | X | 
 
 ### Neural Neighbor
 
@@ -32,3 +32,46 @@ See more information on the original repository. No model is needed.
 
 ![wf_neural_neighbor](workflows/wf_neural_neighbor.png)
 
+### CAST
+
+Download the CAST and UCAST models in the [Test](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#test) section (Google Drive) (Unzip).
+
+Download the `vgg_normalized` model in the [Train](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#train) section
+
+```
+models\
+│ .gitkeep
+│ vgg_normalised.pth
+─CAST_model
+│   latest_net_AE.pth
+│   latest_net_Dec_A.pth    # Safe to delete
+│   latest_net_Dec_B.pth
+│   test_opt.txt            # Safe to delete
+│
+└─UCAST_model
+    latest_net_AE.pth 
+    latest_net_Dec_A.pth    # Safe to delete
+    latest_net_Dec_B.pth
+```
+
+[workflow_cast.json](workflows/workflow_cast.json)
+
+![wf_cast](workflows/wf_cast.png)
+
+## Credits
+
+```
+@inproceedings{zhang2020cast,
+author = {Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
+title = {Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning},
+booktitle = {ACM SIGGRAPH},
+year = {2022}}
+
+@article{zhang2023unified,
+ title={A Unified Arbitrary Style Transfer Framework via Adaptive Contrastive Learning},
+ author={Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
+ journal={ACM Transactions on Graphics},
+ year={2023},
+ publisher={ACM New York, NY}
+}
+```
