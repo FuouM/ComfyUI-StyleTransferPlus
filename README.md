@@ -4,7 +4,7 @@ Advanced Non-Diffusion-based Style Transfer in ComfyUI
 Click name to jump to workflow
 
 1. [**Neural Neighbor**](#neural-neighbor). Paper: [Neural Neighbor Style Transfer](https://github.com/nkolkin13/NeuralNeighborStyleTransfer) 
-2. [**CAST**](#cast). Paper: [A Unified Arbitrary Style Transfer Framework via Adaptive Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
+2. [**CAST**](#cast). Paper: [Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
 
 ## Workflows
 
