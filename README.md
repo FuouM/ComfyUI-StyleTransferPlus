@@ -6,7 +6,7 @@ Click name to jump to workflow
 1. [**Neural Neighbor**](#neural-neighbor). Paper: [Neural Neighbor Style Transfer](https://github.com/nkolkin13/NeuralNeighborStyleTransfer) 
 2. [**CAST**](#cast). Paper: [Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
 3. [**EFDM**](#efdm). Paper: [Exact Feature Distribution Matching for Arbitrary Style Transfer and Domain Generalization](https://github.com/YBZh/EFDM)
-
+4. [**MicroAST**](#microast). Paper: [Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer](https://github.com/EndyWon/MicroAST) (Under construction)
 
 More will come soon
 
@@ -17,7 +17,7 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 | Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast |
 |:-:|:-:|
 |![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) |
-| **EFDM (2022) - Fast but OOM on larger resolutions** | X | 
+| **EFDM (2022) - Fast but OOM on larger resolutions** | **MicroAST (2023)** | 
 | ![efdm](example_outputs/efdm.png) | X |
 
 ### Neural Neighbor
@@ -45,7 +45,7 @@ Download the CAST and UCAST models in the [Test](https://github.com/zyxElsa/CAST
 Download the `vgg_normalized` model in the [Train](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#train) section
 
 ```
-models\
+models/
 │ .gitkeep
 │ vgg_normalised.pth
 ─CAST_model
@@ -68,7 +68,7 @@ models\
 
 Download the `hm_decoder_iter_160000.pth` 
 in https://github.com/YBZh/EFDM/tree/main/ArbitraryStyleTransfer/models and put it in 
-`models\hm_decoder_iter_160000.pth`
+`models/hm_decoder_iter_160000.pth`
 
 Download `vgg_normalized.pth` as instructed in [**CAST**](#cast)
 
@@ -81,11 +81,14 @@ Arguments:
 - `size`: Size of the height of the images after resizing. The aspect ratio of content is kept, while the styles will be resized to match content's height and width. The higher the `size`, the better the result, but also the more VRAM it will take. You may try `use_cpu` to circumvent OOM.
 - `use_cpu`: Whether to use CPU or GPU for this. CPU takes very long! (default workflow = ~21 seconds). Defaults to False.
 
-Important: You should not use batched content image input (i.e video) for this node. It is very easy to get OOM and is not optmized for videos.
-
 [workflow_efdm.json](workflows/workflow_efdm.json)
 
 ![wf_efdm](workflows/wf_efdm.png)
+
+
+### MicroAST
+
+Download `vgg_normalized.pth` as instructed in [**CAST**](#cast)
 
 ## Credits
 
@@ -111,5 +114,14 @@ year = {2022}}
   author={Zhang, Yabin and Li, Minghan and Li, Ruihuang and Jia, Kui and Zhang, Lei},
   booktitle={CVPR},
   year={2022}
+}
+```
+
+```
+@inproceedings{wang2023microast,
+  title={MicroAST: Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer},
+  author={Wang, Zhizhong and Zhao, Lei and Zuo, Zhiwen and Li, Ailin and Chen, Haibo and Xing, Wei and Lu, Dongming},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  year={2023}
 }
 ```

@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 
-from . import net
 from .function import (
     adaptive_instance_normalization,
     adaptive_mean_normalization,
@@ -17,8 +16,8 @@ def inference_efdm(
     src_img: torch.Tensor,
     style_img: torch.Tensor,
     device,
-    decoder_path: str,
-    vgg_path: str,
+    decoder,
+    vgg,
     alpha: float,
     size: int,
     style_type: str,
@@ -38,20 +37,6 @@ def inference_efdm(
             ]
     else:
         style_interpolation_weights = None
-
-    decoder = net.decoder
-    vgg = net.vgg
-
-    decoder.eval()
-    vgg.eval()
-
-    decoder.load_state_dict(torch.load(decoder_path))
-    vgg.load_state_dict(torch.load(vgg_path))
-
-    vgg = torch.nn.Sequential(*list(vgg.children())[:31])
-
-    vgg.to(device)
-    decoder.to(device)
 
     content_tf = test_transform(size, do_crop)
 
@@ -73,7 +58,7 @@ def inference_efdm(
         tmp_styles = [coral(stl, tmp_content).unsqueeze(0) for stl in style]
         style = torch.cat(tmp_styles, dim=0)
         style = style.to(device)
-    
+
     if device.type != "cpu":
         torch.cuda.empty_cache()
 
@@ -87,7 +72,7 @@ def inference_efdm(
         style_interpolation_weights,
         style_type=style_type,
     )
-    
+
     if device.type != "cpu":
         torch.cuda.empty_cache()
 
