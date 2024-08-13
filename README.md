@@ -8,6 +8,8 @@ Click name to jump to workflow
 3. [**EFDM**](#efdm). Paper: [Exact Feature Distribution Matching for Arbitrary Style Transfer and Domain Generalization](https://github.com/YBZh/EFDM)
 4. [**MicroAST**](#microast). Paper: [Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer](https://github.com/EndyWon/MicroAST)
 
+[**Extra nodes**](#extra-nodes)
+
 More will come soon
 
 ## Workflows
@@ -102,6 +104,13 @@ Arguments: Similar to [EFDM](#efdm)
 [workflow_microast.json](workflows/workflow_microast.json)
 
 ![wf_microast](workflows/wf_microast.png)
+
+
+## Extra nodes
+
+### Coral Color Transfer
+
+![extra_coral_color_transfer](workflows/extra/extra_coral_color_transfer.png)
 
 ## Credits
 

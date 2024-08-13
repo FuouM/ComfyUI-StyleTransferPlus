@@ -2,7 +2,7 @@
 @author: Fuou Marinas
 @title: ComfyUI-StyleTransferPlus
 @nickname: StyleTransferPlus
-@description: A collection of style trasnfer nodes.
+@description: A collection of style transfer nodes.
 """
 
 from pathlib import Path
