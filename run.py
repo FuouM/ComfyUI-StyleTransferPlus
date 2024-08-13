@@ -22,9 +22,9 @@ from .constants import (
     EFDM_PATH,
     EFDM_STYLE_TYPES,
 )
+from .module_cast import net as net_cast
 from .module_cast.cast_model import inference_ucast, load_a_ckpt
 from .module_efdm import net as net_efdm
-from .module_cast import net as net_cast
 from .module_efdm.efdm_model import inference_efdm
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
 
@@ -164,7 +164,7 @@ class CAST:
         pbar = ProgressBar(num_frames)
 
         result: list[torch.Tensor] = []
-        with torch.inference_mode(mode=False):
+        with torch.no_grad():
             for i in range(num_frames):
                 params["src_img"] = src_img[i].unsqueeze(0)
                 res_tensor = inference_ucast(**params)
@@ -263,7 +263,7 @@ class EFDM:
         pbar = ProgressBar(num_frames)
 
         result: list[torch.Tensor] = []
-        with torch.inference_mode(mode=False):
+        with torch.no_grad():
             for i in range(num_frames):
                 params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
                 res_tensor = inference_efdm(**params)
