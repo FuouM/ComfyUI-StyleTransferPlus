@@ -8,3 +8,8 @@ CAST_VGG_PATH = "models/vgg_normalised.pth"
 EFDM_STYLE_TYPES = ["adain", "adamean", "adastd", "efdm", "hm"]
 EFDM_DEFAULT = "efdm"
 EFDM_PATH = "models/hm_decoder_iter_160000.pth"
+
+MICROAST_CONTENT_ENCODER_PATH = "models/microast/content_encoder_iter_160000.pth.tar"
+MICROAST_STYLE_ENCODER_PATH = "models/microast/style_encoder_iter_160000.pth.tar"
+MICROAST_DECODER_PATH = "models/microast/decoder_iter_160000.pth.tar"
+MICROAST_MODULATOR_PATH = "models/microast/modulator_iter_160000.pth.tar"

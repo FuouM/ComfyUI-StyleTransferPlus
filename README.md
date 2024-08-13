@@ -17,8 +17,8 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 | Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast |
 |:-:|:-:|
 |![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) |
-| **EFDM (2022) - Fast** | **MicroAST (2023)** | 
-| ![efdm](example_outputs/efdm.png) | X |
+| **EFDM (2022) - Fast** | **MicroAST (2023) - Fast** | 
+| ![efdm](example_outputs/efdm.png) | ![microast](example_outputs/microast.png) |
 
 ### Neural Neighbor
 
@@ -88,7 +88,20 @@ Arguments:
 
 ### MicroAST
 
-Download `vgg_normalized.pth` as instructed in [**CAST**](#cast)
+Download models from https://github.com/EndyWon/MicroAST/tree/main/models and place them in the models folder
+
+```
+models/microast/content_encoder_iter_160000.pth.tar
+models/microast/decoder_iter_160000.pth.tar
+models/microast/modulator_iter_160000.pth.tar
+models/microast/style_encoder_iter_160000.pth.tar
+```
+
+Arguments: Similar to [EFDM](#efdm)
+
+[workflow_microast.json](workflows/workflow_microast.json)
+
+![wf_microast](workflows/wf_microast.png)
 
 ## Credits
 
