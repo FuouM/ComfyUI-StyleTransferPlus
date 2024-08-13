@@ -21,11 +21,17 @@ from .constants import (
     EFDM_DEFAULT,
     EFDM_PATH,
     EFDM_STYLE_TYPES,
+    MICROAST_CONTENT_ENCODER_PATH,
+    MICROAST_DECODER_PATH,
+    MICROAST_MODULATOR_PATH,
+    MICROAST_STYLE_ENCODER_PATH,
 )
 from .module_cast import net as net_cast
 from .module_cast.cast_model import inference_ucast, load_a_ckpt
 from .module_efdm import net as net_efdm
 from .module_efdm.efdm_model import inference_efdm
+from .module_microast import net_microAST
+from .module_microast.microast_model import microast_inference
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
 
 base_dir = Path(__file__).resolve().parent
@@ -268,7 +274,87 @@ class EFDM:
                 params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
                 res_tensor = inference_efdm(**params)
                 result.append(res_tensor.permute(0, 2, 3, 1))
-                print(f"{res_tensor.shape=}")
+                pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
+
+
+class MicroAST:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("res_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        do_crop: bool,
+        size: int,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        content_encoder = net_microAST.Encoder()
+        style_encoder = net_microAST.Encoder()
+        modulator = net_microAST.Modulator()
+        decoder = net_microAST.Decoder()
+
+        content_encoder.eval()
+        style_encoder.eval()
+        modulator.eval()
+        decoder.eval()
+
+        content_encoder.load_state_dict(
+            torch.load(f"{base_dir}/{MICROAST_CONTENT_ENCODER_PATH}")
+        )
+        style_encoder.load_state_dict(
+            torch.load(f"{base_dir}/{MICROAST_STYLE_ENCODER_PATH}")
+        )
+        modulator.load_state_dict(torch.load(f"{base_dir}/{MICROAST_MODULATOR_PATH}"))
+        decoder.load_state_dict(torch.load(f"{base_dir}/{MICROAST_DECODER_PATH}"))
+
+        network = net_microAST.TestNet(
+            content_encoder, style_encoder, modulator, decoder
+        )
+        network.to(device)
+
+        params = {
+            "style_img": style_img.permute(0, 3, 1, 2),
+            "device": device,
+            "alpha": 1.0,
+            "size": size,
+            "do_crop": do_crop,
+            "network": network,
+        }
+
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in range(num_frames):
+                params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = microast_inference(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
                 pbar.update_absolute(i, num_frames)
 
         return (torch.cat(result, dim=0),)

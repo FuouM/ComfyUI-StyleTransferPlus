@@ -50,8 +50,8 @@ def inference_efdm(
     )
     content = content.expand_as(style)
 
-    print(f"Resized: {content.shape=}")
-    print(f"Resized: {style.shape=}")
+    # print(f"Resized: {content.shape=}")
+    # print(f"Resized: {style.shape=}")
 
     if preserve_color:
         tmp_content = content.squeeze()
