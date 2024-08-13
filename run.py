@@ -25,14 +25,19 @@ from .constants import (
     MICROAST_DECODER_PATH,
     MICROAST_MODULATOR_PATH,
     MICROAST_STYLE_ENCODER_PATH,
+    UNIST_DEC_PATH,
+    UNIST_ENC_PATH,
+    UNIST_PATH,
 )
 from .module_cast import net as net_cast
 from .module_cast.cast_model import inference_ucast, load_a_ckpt
 from .module_efdm import net as net_efdm
 from .module_efdm.efdm_model import inference_efdm
 from .module_microast import net_microAST
-from .module_microast.microast_model import microast_inference
+from .module_microast.microast_model import inference_microast
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
+from .module_unist.model import video_Style_transfer
+from .module_unist.unist_model import inference_unist
 
 base_dir = Path(__file__).resolve().parent
 
@@ -353,11 +358,138 @@ class MicroAST:
         with torch.no_grad():
             for i in range(num_frames):
                 params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
-                res_tensor = microast_inference(**params)
+                res_tensor = inference_microast(**params)
                 result.append(res_tensor.permute(0, 2, 3, 1))
                 pbar.update_absolute(i, num_frames)
 
         return (torch.cat(result, dim=0),)
+
+
+class UniST:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        do_crop: bool,
+        size: int,
+        src_images: torch.Tensor | None = None,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        network = video_Style_transfer(
+            ckpt_path=f"{base_dir}/{UNIST_PATH}",
+            encoder_path=f"{base_dir}/{UNIST_ENC_PATH}",
+            decoder_path=f"{base_dir}/{UNIST_DEC_PATH}",
+        )
+
+        network.eval()
+        network.to(device)
+
+        params = {
+            "src_style": style_img.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "network": network,
+            "content_type": "image",
+        }
+
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in tqdm.tqdm(range(num_frames), desc="Generating"):
+                params["src"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = inference_unist(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
+                pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
+
+
+class UniST_Video:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_video": ("IMAGE",),
+                "style_video": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_video: torch.Tensor,
+        style_video: torch.Tensor,
+        do_crop: bool,
+        size: int,
+        src_images: torch.Tensor | None = None,
+    ):
+        print(f"{src_video.shape=}")
+        print(f"{style_video.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        network = video_Style_transfer(
+            ckpt_path=f"{base_dir}/{UNIST_PATH}",
+            encoder_path=f"{base_dir}/{UNIST_ENC_PATH}",
+            decoder_path=f"{base_dir}/{UNIST_DEC_PATH}",
+        )
+
+        network.eval()
+        network.to(device)
+
+        params = {
+            "src": src_video.permute(0, 3, 1, 2),
+            "src_style": style_video.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "network": network,
+            "content_type": "video",
+        }
+        
+        with torch.no_grad():
+            res_tensor = inference_unist(**params).permute(0, 2, 3, 1)
+
+        return (res_tensor, )
 
 
 def serialize_floats(lst: list[float]):

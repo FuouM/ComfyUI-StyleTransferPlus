@@ -1,11 +1,10 @@
 import torch
 
-from . import net_microAST
 import torch.nn.functional as F
 from torchvision import transforms
 
 
-def microast_inference(
+def inference_microast(
     src_img: torch.Tensor,
     style_img: torch.Tensor,
     size: int,
