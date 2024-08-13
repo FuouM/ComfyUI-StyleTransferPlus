@@ -22,7 +22,9 @@ from .constants import (
     EFDM_PATH,
     EFDM_STYLE_TYPES,
 )
-from .module_cast.cast_model import inference_ucast
+from .module_cast.cast_model import inference_ucast, load_a_ckpt
+from .module_efdm import net as net_efdm
+from .module_cast import net as net_cast
 from .module_efdm.efdm_model import inference_efdm
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
 
@@ -134,12 +136,28 @@ class CAST:
         print(f"{style_img.shape=}")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        vgg = net_cast.vgg
+        vgg.load_state_dict(torch.load(f"{base_dir}/{CAST_VGG_PATH}"))
+        vgg = torch.nn.Sequential(*list(vgg.children())[:31])
+
+        netAE = net_cast.ADAIN_Encoder(vgg)
+        netDec_B = net_cast.Decoder()
+
+        netAE.load_state_dict(
+            load_a_ckpt(f"{base_dir}/models/{model_arch}_model/{CAST_NET_AE_PATH}")
+        )
+        netDec_B.load_state_dict(
+            load_a_ckpt(f"{base_dir}/models/{model_arch}_model/{CAST_NET_DEC_B_PATH}")
+        )
+
+        netAE = netAE.to(device).eval()
+        netDec_B = netDec_B.to(device).eval()
+
         params = {
             "style_img": style_img,
             "device": device,
-            "ckpt_ae": f"{base_dir}/models/{model_arch}_model/{CAST_NET_AE_PATH}",
-            "ckpt_decB": f"{base_dir}/models/{model_arch}_model/{CAST_NET_DEC_B_PATH}",
-            "vgg_path": f"{base_dir}/{CAST_VGG_PATH}",
+            "netAE": netAE,
+            "netDec_B": netDec_B,
         }
 
         num_frames = src_img.size(0)
@@ -211,11 +229,25 @@ class EFDM:
             "cuda" if torch.cuda.is_available() and not use_cpu else "cpu"
         )
 
+        decoder = net_efdm.decoder
+        vgg = net_efdm.vgg
+
+        decoder.eval()
+        vgg.eval()
+
+        decoder.load_state_dict(torch.load(f"{base_dir}/{EFDM_PATH}"))
+        vgg.load_state_dict(torch.load(f"{base_dir}/{CAST_VGG_PATH}"))
+
+        vgg = torch.nn.Sequential(*list(vgg.children())[:31])
+
+        vgg.to(device)
+        decoder.to(device)
+
         params = {
             "style_img": style_img.permute(0, 3, 1, 2),
             "device": device,
-            "decoder_path": f"{base_dir}/{EFDM_PATH}",
-            "vgg_path": f"{base_dir}/{CAST_VGG_PATH}",
+            "decoder": decoder,
+            "vgg": vgg,
             "alpha": style_strength,
             "size": size,
             "style_type": model_arch,
