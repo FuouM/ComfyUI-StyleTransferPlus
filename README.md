@@ -17,7 +17,7 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 | Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast |
 |:-:|:-:|
 |![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) |
-| EFDM (2022) - Fast but OOM on larger resolutions | X | 
+| **EFDM (2022) - Fast but OOM on larger resolutions** | X | 
 | ![efdm](example_outputs/efdm.png) | X |
 
 ### Neural Neighbor
