@@ -7,6 +7,7 @@ Click name to jump to workflow
 2. [**CAST**](#cast). Paper: [Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
 3. [**EFDM**](#efdm). Paper: [Exact Feature Distribution Matching for Arbitrary Style Transfer and Domain Generalization](https://github.com/YBZh/EFDM)
 4. [**MicroAST**](#microast). Paper: [Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer](https://github.com/EndyWon/MicroAST)
+5. [**UniST**](#unist) : [Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers](https://github.com/NevSNev/UniST)
 
 [**Extra nodes**](#extra-nodes)
 
@@ -16,11 +17,13 @@ More will come soon
 
 All nodes support batched input (i.e video) but is generally not recommended. One should generate 1 or 2 style frames (start and end), then use [ComfyUI-EbSynth](https://github.com/FuouM/ComfyUI-EbSynth) to propagate the style to the entire video.
 
-| Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast |
-|:-:|:-:|
-|![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) |
-| **EFDM (2022) - Fast** | **MicroAST (2023) - Fast** | 
-| ![efdm](example_outputs/efdm.png) | ![microast](example_outputs/microast.png) |
+|          Neural Neighbor (2020-2022) - Slowest          |          CAST (2022-2023) - Fast          |
+| :-----------------------------------------------------: | :---------------------------------------: |
+| ![neural_neighbor](example_outputs/neural_neighbor.png) |     ![cast](example_outputs/cast.png)     |
+|                 **EFDM (2022) - Fast**                  |        **MicroAST (2023) - Fast**         |
+|            ![efdm](example_outputs/efdm.png)            | ![microast](example_outputs/microast.png) |
+|        **UniST (2023) - Medium - Only squares**         |                   **X**                   |
+|        ![efdm](example_outputs/unist_image.png)         |                     X                     |
 
 ### Neural Neighbor
 
@@ -106,6 +109,27 @@ Arguments: Similar to [EFDM](#efdm)
 ![wf_microast](workflows/wf_microast.png)
 
 
+### UniST
+
+Download `UniST_model.pt` in [Testing](https://github.com/NevSNev/UniST?tab=readme-ov-file#testing) and `vgg_r41.pth, dec_r41.pth` in [Training](https://github.com/NevSNev/UniST?tab=readme-ov-file#training) section and place them in
+
+```
+models/unist/UniST_model.pt
+models/unist/dec_r41.pth
+models/unist/vgg_r41.pth
+```
+
+The model only works with square images, so inputs are resized to `size x size`. `do_crop` will resize height, then crop to square.
+
+The Video node is "more native" than the Image node for batched images (video) inputs. The model works with `batch=3` (3 consecutive frames), so we split the video into such.
+
+|                             UniST                             |                           UniST Video                            |
+| :-----------------------------------------------------------: | :--------------------------------------------------------------: |
+| [workflow_unist_image.json](workflows/workflow_microast.json) | [workflow_unist_video.json](workflows/workflow_unist_video.json) |
+|        ![wf_unist_image](workflows/wf_unist_image.png)        |     ![wf_microast](example_outputs/example_unist_video.png)      |
+||(Not a workflow-embedded image)|
+
+
 ## Extra nodes
 
 ### Coral Color Transfer
@@ -145,5 +169,16 @@ year = {2022}}
   author={Wang, Zhizhong and Zhao, Lei and Zuo, Zhiwen and Li, Ailin and Chen, Haibo and Xing, Wei and Lu, Dongming},
   booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
   year={2023}
+}
+```
+
+```
+@InProceedings{Gu_2023_ICCV,
+    author    = {Gu, Bohai and Fan, Heng and Zhang, Libo},
+    title     = {Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2023},
+    pages     = {23545-23554}
 }
 ```
