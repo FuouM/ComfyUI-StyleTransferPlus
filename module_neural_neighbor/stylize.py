@@ -74,7 +74,7 @@ def produce_stylization(
     li = -1
     for scl in range(max_scls)[::-1]:
         # Get content image and style image from pyramid at current resolution
-        if device != "cpu":
+        if device.type != "cpu":
             torch.cuda.empty_cache()
         style_im_tmp = syn_pyr(style_pyr[scl:])
         content_im_tmp = syn_pyr(c_pyr[scl:])
@@ -381,7 +381,7 @@ def optimize_output_im(
 
         pbar.update_absolute(i, max_iter)
 
-    if device != "cpu":
+    if device.type != "cpu":
         torch.cuda.empty_cache()
 
     # Update output's pyramid coefficients for current resolution

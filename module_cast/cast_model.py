@@ -37,5 +37,8 @@ def inference_ucast(
     with torch.no_grad():
         real_A_feat = netAE.forward(real_A, real_B)
         fake_B = netDec_B.forward(real_A_feat)
+    
+    if device.type != "cpu":
+        torch.cuda.empty_cache()
 
     return fake_B
