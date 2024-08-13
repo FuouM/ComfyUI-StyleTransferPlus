@@ -17,7 +17,7 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 | Neural Neighbor (2020-2022) - Slowest | CAST (2022-2023) - Fast |
 |:-:|:-:|
 |![neural_neighbor](example_outputs/neural_neighbor.png) | ![cast](example_outputs/cast.png) |
-| **EFDM (2022) - Fast but OOM on larger resolutions** | **MicroAST (2023)** | 
+| **EFDM (2022) - Fast** | **MicroAST (2023)** | 
 | ![efdm](example_outputs/efdm.png) | X |
 
 ### Neural Neighbor
@@ -78,7 +78,7 @@ Arguments:
 - `style_strength`: From 0.00 to 1.00. The higher the stronger the style. Defaults to 1.00
 - `do_crop`: Whether to resize and then crop the content and style images to `size x size` or just resize. Defaults to False
 - `preserve_color`: Whether to preserve the color of the content image. Defaults to False
-- `size`: Size of the height of the images after resizing. The aspect ratio of content is kept, while the styles will be resized to match content's height and width. The higher the `size`, the better the result, but also the more VRAM it will take. You may try `use_cpu` to circumvent OOM.
+- `size`: Size of the height of the images after resizing. The aspect ratio of content is kept, while the styles will be resized to match content's height and width. The higher the `size`, the better the result, but also the more VRAM it will take. You may try `use_cpu` to circumvent OOM. Tested with `size=2048` on 12GB VRAM.
 - `use_cpu`: Whether to use CPU or GPU for this. CPU takes very long! (default workflow = ~21 seconds). Defaults to False.
 
 [workflow_efdm.json](workflows/workflow_efdm.json)

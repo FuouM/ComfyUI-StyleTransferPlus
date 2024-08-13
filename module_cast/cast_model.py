@@ -1,8 +1,5 @@
 import torch
 
-from . import net
-
-
 def load_a_ckpt(ckpt_path: str):
     state_dict = torch.load(ckpt_path)
     if hasattr(state_dict, "_metadata"):
