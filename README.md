@@ -22,8 +22,8 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 | ![neural_neighbor](example_outputs/neural_neighbor.png) |     ![cast](example_outputs/cast.png)     |
 |                 **EFDM (2022) - Fast**                  |        **MicroAST (2023) - Fast**         |
 |            ![efdm](example_outputs/efdm.png)            | ![microast](example_outputs/microast.png) |
-|                    **UniST (2023)**                     |                   **X**                   |
-|                            X                            |                     X                     |
+|        **UniST (2023) - Medium - Only squares**         |                   **X**                   |
+|        ![efdm](example_outputs/unist_image.png)         |                     X                     |
 
 ### Neural Neighbor
 
@@ -118,6 +118,16 @@ models/unist/UniST_model.pt
 models/unist/dec_r41.pth
 models/unist/vgg_r41.pth
 ```
+
+The model only works with square images, so inputs are resized to `size x size`. `do_crop` will resize height, then crop to square.
+
+The Video node is "more native" than the Image node for batched images (video) inputs. The model works with `batch=3` (3 consecutive frames), so we split the video into such.
+
+|                             UniST                             |                           UniST Video                            |
+| :-----------------------------------------------------------: | :--------------------------------------------------------------: |
+| [workflow_unist_image.json](workflows/workflow_microast.json) | [workflow_unist_video.json](workflows/workflow_unist_video.json) |
+|        ![wf_unist_image](workflows/wf_unist_image.png)        |     ![wf_microast](example_outputs/example_unist_video.png)      |
+||(Not a workflow-embedded image)|
 
 
 ## Extra nodes

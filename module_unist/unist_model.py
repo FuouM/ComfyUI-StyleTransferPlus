@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torchvision.transforms as transforms
 
@@ -22,13 +21,7 @@ def inference_unist(
     if content_type == "video":
         style = match_shape(style, content[0])
 
-    print(f"{content.shape=}")
-    print(f"{style.shape=}")
-
-    y_hat = network.forward(
-        content, style, content_type, tab="inference"
-    )  # [B, C, H, W]
-    print(f"{y_hat.shape=}")
+    y_hat = network.forward(content, style, content_type, tab="inference")
     output = un_normalize_batch(y_hat)  # [B, C, H, W]
 
     return output
@@ -58,24 +51,15 @@ def un_normalize_batch(tensor, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
 
 def match_shape(a: torch.Tensor, b: torch.Tensor):
     B_a, C, H, W = a.shape
-    B_b, _, _, _ = b.shape
+    B_b = b.shape[0]
 
-    if B_a == 1 and B_b > 1:
-        # Expand a along the batch dimension to match the shape of b
-        expanded_a = a.expand(B_b, -1, -1, -1)
-    elif B_a > 1 and B_a < B_b:
-        # Repeat a along the batch dimension to match the shape of b
-        repeated_a = a.repeat(B_b // B_a, 1, 1, 1)
-        if B_b % B_a != 0:
-            remaining = B_b % B_a
-            repeated_a = torch.cat([repeated_a, a[-remaining:]], dim=0)
-        expanded_a = repeated_a
-    elif B_a > B_b:
-        # Trim a along the batch dimension to match the shape of b
-        trimmed_a = a[:B_b]
-        expanded_a = trimmed_a
-    else:
-        # If B_a == B_b, no change is needed
-        expanded_a = a
-
-    return expanded_a
+    if B_a == B_b:
+        return a
+    elif B_a == 1:
+        return a.expand(B_b, -1, -1, -1)
+    elif B_a < B_b:
+        repeat_factor = B_b // B_a
+        remainder = B_b % B_a
+        return torch.cat([a.repeat(repeat_factor, 1, 1, 1), a[:remainder]], dim=0)
+    else:  # B_a > B_b
+        return a[:B_b]

@@ -240,8 +240,8 @@ class Encoder_cross(nn.Module):
         )
 
     def forward(self, dec_output, enc_output):
-        print(f"{dec_output.shape=}")
-        print(f"{enc_output.shape=}")
+        # print(f"{dec_output.shape=}")
+        # print(f"{enc_output.shape=}")
         for enc_layer in self.layer_stack:
             enc_output = enc_layer(dec_output, enc_output)
         return enc_output
@@ -259,10 +259,9 @@ class Decoder_style_tranfer(nn.Module):
         )
 
     def forward(self, dec_output, enc_output):
-        print(f"{dec_output.shape=}")
-        print(f"{enc_output.shape=}")
+        # print(f"{dec_output.shape=}")
+        # print(f"{enc_output.shape=}")
         for dec_layer in self.layer_stack:
-            # print(dec_layer)
             dec_output = dec_layer(dec_output, enc_output)
 
         _, l, _ = dec_output.size()

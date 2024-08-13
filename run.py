@@ -394,7 +394,6 @@ class UniST:
         style_img: torch.Tensor,
         do_crop: bool,
         size: int,
-        src_images: torch.Tensor | None = None,
     ):
         print(f"{src_img.shape=}")
         print(f"{style_img.shape=}")
@@ -461,7 +460,6 @@ class UniST_Video:
         style_video: torch.Tensor,
         do_crop: bool,
         size: int,
-        src_images: torch.Tensor | None = None,
     ):
         print(f"{src_video.shape=}")
         print(f"{style_video.shape=}")
@@ -476,8 +474,11 @@ class UniST_Video:
         network.eval()
         network.to(device)
 
+        num_frames = src_video.size(0)
+        batch_size = 3
+        result = []
+
         params = {
-            "src": src_video.permute(0, 3, 1, 2),
             "src_style": style_video.permute(0, 3, 1, 2),
             "device": device,
             "size": size,
@@ -485,11 +486,23 @@ class UniST_Video:
             "network": network,
             "content_type": "video",
         }
-        
-        with torch.no_grad():
-            res_tensor = inference_unist(**params).permute(0, 2, 3, 1)
 
-        return (res_tensor, )
+        pbar = ProgressBar(num_frames)
+
+        with torch.no_grad():
+            for i in tqdm.tqdm(range(0, num_frames, batch_size), "Generating"):
+                batch_end = min(i + batch_size, num_frames)
+                src_batch = src_video[i:batch_end].permute(0, 3, 1, 2)
+
+                params["src"] = src_batch
+
+                res_tensor = inference_unist(**params).permute(0, 2, 3, 1)
+                result.append(res_tensor)
+
+                pbar.update_absolute(batch_end, num_frames)
+
+        final_result = torch.cat(result, dim=0)
+        return (final_result,)
 
 
 def serialize_floats(lst: list[float]):
