@@ -9,7 +9,7 @@ Click name to jump to workflow
 4. [**MicroAST**](#microast). Paper: [Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer](https://github.com/EndyWon/MicroAST)
 5. [**UniST**](#unist). Paper: [Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers](https://github.com/NevSNev/UniST)
 6. [**AesPA-Net**](#aespa-net). Paper: [Aesthetic Pattern-Aware Style Transfer Networks](https://github.com/Kibeom-Hong/AesPA-Net)
-
+7. [**TSSAT**](#tssat). Paper: [Two-Stage Statistics-Aware Transformation for Artistic Style Transfer](https://github.com/HalbertCH/TSSAT)
 
 [**Extra nodes**](#extra-nodes)
 
@@ -26,6 +26,8 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 |            ![efdm](example_outputs/efdm.png)            |  ![microast](example_outputs/microast.png)   |
 |        **UniST (2023) - Medium - Only squares**         | **AesPA-Net (2023) - Medium - Only squares** |
 |        ![efdm](example_outputs/unist_image.png)         |     ![aespa](example_outputs/aespa.png)      |
+|                 **TSSAT (2023) - Slow**                 |                    **X**                     |
+|           ![tssat](example_outputs/tssat.png)           |                      X                       |
 
 ### Neural Neighbor
 
@@ -138,9 +140,9 @@ Download models from [Usage](https://github.com/Kibeom-Hong/AesPA-Net?tab=readme
 For the VGG model, download `vgg_normalised_conv5_1.pth` from https://github.com/pietrocarbo/deep-transfer/tree/master/models/autoencoder_vgg19/vgg19_5
 
 ```
-models\aespa\dec_model.pth
-models\aespa\transformer_model.pth
-models\aespa\vgg_normalised_conv5_1.pth
+models/aespa/dec_model.pth
+models/aespa/transformer_model.pth
+models/aespa/vgg_normalised_conv5_1.pth
 ```
 
 The original authors provided a `vgg_normalised_conv5_1.t7` model, which can only be opened with torchfile, and pyTorch has dropped native support for it. It also doesn't work reliably on Windows.
@@ -148,6 +150,22 @@ The original authors provided a `vgg_normalised_conv5_1.t7` model, which can onl
 [workflow_aespa.json](workflows/workflow_aespa.json)
 
 ![wf_aespa](workflows/wf_aespa.png)
+
+
+### TSSAT
+
+Download the `TSSAT-model.zip` in the [Model Testing](https://github.com/HalbertCH/TSSAT?tab=readme-ov-file#model-testing) section, and unzip it 
+
+```
+models/tssat/decoder_iter_160000.pth
+
+# Outside folder, can be ignored from the zip if already downloaded from above
+models/vgg_normalised.pth             
+```
+
+[workflow_tssat.json](workflows/workflow_tssat.json)
+
+![wf_tssat](workflows/wf_tssat.png)
 
 ## Extra nodes
 

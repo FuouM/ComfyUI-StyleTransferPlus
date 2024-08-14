@@ -21,3 +21,5 @@ UNIST_ENC_PATH = "models/unist/vgg_r41.pth"
 VGG_NORM_CONV51_PATH = "models/vgg_normalised_conv5_1.pth"
 AESPA_DEC_PATH = "models/aespa/dec_model.pth"
 AESPA_TRANSFORMER_PATH = "models/aespa/transformer_model.pth"
+
+TSSAT_DEC_PATH = "models/tssat/decoder_iter_160000.pth"

@@ -8,7 +8,6 @@
 from pathlib import Path
 
 import torch
-import torch.nn.functional as F
 import tqdm
 from comfy.utils import ProgressBar
 
@@ -27,6 +26,7 @@ from .constants import (
     MICROAST_DECODER_PATH,
     MICROAST_MODULATOR_PATH,
     MICROAST_STYLE_ENCODER_PATH,
+    TSSAT_DEC_PATH,
     UNIST_DEC_PATH,
     UNIST_ENC_PATH,
     UNIST_PATH,
@@ -59,6 +59,9 @@ from .module_microast.microast_model import inference_microast
 
 # Neural Neighbor
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
+
+# TSSAT
+from .module_tssat.tssat_model import MODEL_TSSAT, inference_tssat
 
 # UniST
 from .module_unist.model import video_Style_transfer
@@ -605,6 +608,72 @@ class AesPA:
                 res_tensor = inference_aespa(**params)
                 result.append(res_tensor.permute(0, 2, 3, 1))
                 pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
+
+
+class TSSAT:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "max": 1024, "step": 1},
+                ),
+                "max_iter": (
+                    "INT",
+                    {"default": 1, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        do_crop: bool,
+        size: int,
+        max_iter: int,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        model = MODEL_TSSAT(
+            dec_path=f"{base_dir}/{TSSAT_DEC_PATH}",
+            vgg_path=f"{base_dir}/{CAST_VGG_PATH}",
+            device=device,
+        )
+
+        params = {
+            "style_img": style_img.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "max_steps": max_iter,
+            "model": model,
+        }
+
+        num_frames = src_img.size(0)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in range(num_frames):
+                params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = inference_tssat(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
 
         return (torch.cat(result, dim=0),)
 
