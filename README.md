@@ -10,6 +10,8 @@ Click name to jump to workflow
 5. [**UniST**](#unist). Paper: [Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers](https://github.com/NevSNev/UniST)
 6. [**AesPA-Net**](#aespa-net). Paper: [Aesthetic Pattern-Aware Style Transfer Networks](https://github.com/Kibeom-Hong/AesPA-Net)
 7. [**TSSAT**](#tssat). Paper: [Two-Stage Statistics-Aware Transformation for Artistic Style Transfer](https://github.com/HalbertCH/TSSAT)
+8. [**AesFA**](#aesfa). Paper: [An Aesthetic Feature-Aware Arbitrary Neural Style Transfer](https://github.com/Sooyyoungg/AesFA)
+
 
 [**Extra nodes**](#extra-nodes)
 
@@ -26,8 +28,8 @@ All nodes support batched input (i.e video) but is generally not recommended. On
 |            ![efdm](example_outputs/efdm.png)            |  ![microast](example_outputs/microast.png)   |
 |        **UniST (2023) - Medium - Only squares**         | **AesPA-Net (2023) - Medium - Only squares** |
 |        ![efdm](example_outputs/unist_image.png)         |     ![aespa](example_outputs/aespa.png)      |
-|                 **TSSAT (2023) - Slow**                 |                    **X**                     |
-|           ![tssat](example_outputs/tssat.png)           |                      X                       |
+|                 **TSSAT (2023) - Slow**                 |    **AesFA (2024) - Fast - Only squares**    |
+|           ![tssat](example_outputs/tssat.png)           |     ![aesfa](example_outputs/aesfa.png)      |
 
 ### Neural Neighbor
 
@@ -166,6 +168,22 @@ models/vgg_normalised.pth
 [workflow_tssat.json](workflows/workflow_tssat.json)
 
 ![wf_tssat](workflows/wf_tssat.png)
+
+
+### AesFA
+
+Download `main.pth` in the [Getting Started](https://github.com/Sooyyoungg/AesFA?tab=readme-ov-file#getting-started) and place it in `models/aesfa/main.pth`.
+
+[workflow_aesfa_w_blend.json](workflows/workflow_aesfa_w_blend.json)
+
+![wf_aesfa_w_blend](workflows/wf_aesfa_w_blend.png)
+
+Authors' Notes:
+
+>  [...] style blending, i.e., using the low-frequency and high-frequency style information from different images.
+The style-transferred outputs finely keep the color information from the low-frequency image and change the texture information based on the high frequency image.
+
+> The vertical line-shape artifacts alongside the images are often observed. We reason that these appear because the content features are being convolved directly with the predicted aesthetic feature-aware kernels and biases in our model. In addition, the upsampling operation could be the ones that create artifacts.
 
 ## Extra nodes
 

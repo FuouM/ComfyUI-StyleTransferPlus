@@ -23,3 +23,5 @@ AESPA_DEC_PATH = "models/aespa/dec_model.pth"
 AESPA_TRANSFORMER_PATH = "models/aespa/transformer_model.pth"
 
 TSSAT_DEC_PATH = "models/tssat/decoder_iter_160000.pth"
+
+AESFA_PATH = "models/aesfa/main.pth"

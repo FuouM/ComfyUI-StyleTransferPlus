@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-styletransferplus"
-description = "Nodes: Neural Neighbor, CAST, EFDM, MicroAST, UniST, AesPA, TSSAT ..."
-version = "1.0.2"
+description = "Nodes: Neural Neighbor, CAST, EFDM, MicroAST, UniST, AesPA, TSSAT, AesFA, ..."
+version = "1.0.3"
 license = {file = "LICENSE"}
 dependencies = ["torch", "torchvision", "scikit-image", "einops"]
 

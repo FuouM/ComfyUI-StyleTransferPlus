@@ -1,0 +1,394 @@
+{
+  "last_node_id": 13,
+  "last_link_id": 34,
+  "nodes": [
+    {
+      "id": 9,
+      "type": "AESFA",
+      "pos": [
+        678,
+        313
+      ],
+      "size": {
+        "0": 315,
+        "1": 102
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 33
+        },
+        {
+          "name": "style_img",
+          "type": "IMAGE",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out_img",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AESFA"
+      },
+      "widgets_values": [
+        true,
+        1024
+      ]
+    },
+    {
+      "id": 11,
+      "type": "LoadImage",
+      "pos": [
+        682,
+        672
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            25
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "popova.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "AesFAStyleBlend",
+      "pos": [
+        682,
+        501
+      ],
+      "size": {
+        "0": 315,
+        "1": 122
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_img",
+          "type": "IMAGE",
+          "link": 34
+        },
+        {
+          "name": "style_hi",
+          "type": "IMAGE",
+          "link": 31
+        },
+        {
+          "name": "style_lo",
+          "type": "IMAGE",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out_img",
+          "type": "IMAGE",
+          "links": [
+            26
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AesFAStyleBlend"
+      },
+      "widgets_values": [
+        true,
+        1024
+      ]
+    },
+    {
+      "id": 12,
+      "type": "Reroute",
+      "pos": [
+        539,
+        586
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            30,
+            31
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        338,
+        668
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            28
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "S4.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "Reroute",
+      "pos": [
+        528.2286926786944,
+        402.29128892008794
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "IMAGE",
+          "links": [
+            33,
+            34
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": false,
+        "horizontal": false
+      }
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [
+        174,
+        290
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            32
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "006.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SaveImage",
+      "pos": [
+        1039,
+        287
+      ],
+      "size": [
+        321.92869267869446,
+        328.691288920088
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 26
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "StyleTransfer"
+      ]
+    }
+  ],
+  "links": [
+    [
+      25,
+      11,
+      0,
+      10,
+      2,
+      "IMAGE"
+    ],
+    [
+      26,
+      10,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      28,
+      3,
+      0,
+      12,
+      0,
+      "*"
+    ],
+    [
+      30,
+      12,
+      0,
+      9,
+      1,
+      "IMAGE"
+    ],
+    [
+      31,
+      12,
+      0,
+      10,
+      1,
+      "IMAGE"
+    ],
+    [
+      32,
+      2,
+      0,
+      13,
+      0,
+      "*"
+    ],
+    [
+      33,
+      13,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      34,
+      13,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9090909090909091,
+      "offset": [
+        -109.12869267869443,
+        -65.69128892008793
+      ]
+    }
+  },
+  "version": 0.4
+}
