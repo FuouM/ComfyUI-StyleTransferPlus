@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-styletransferplus"
+description = "Nodes:Neural Neighbor, CAST, EFDM, MicroAST, Coral Color Transfer."
+version = "1.0.0"
+license = {file = "LICENSE"}
+dependencies = ["torch", "torchvision", "scikit-image", "einops"]
+
+[project.urls]
+Repository = "https://github.com/FuouM/ComfyUI-StyleTransferPlus"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "fuoumarinas"
+DisplayName = "ComfyUI-StyleTransferPlus"
+Icon = ""
