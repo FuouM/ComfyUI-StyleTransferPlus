@@ -13,6 +13,8 @@ import tqdm
 from comfy.utils import ProgressBar
 
 from .constants import (
+    AESPA_DEC_PATH,
+    AESPA_TRANSFORMER_PATH,
     CAST_DEFAULT,
     CAST_NET_AE_PATH,
     CAST_NET_DEC_B_PATH,
@@ -28,14 +30,37 @@ from .constants import (
     UNIST_DEC_PATH,
     UNIST_ENC_PATH,
     UNIST_PATH,
+    VGG_NORM_CONV51_PATH,
 )
+
+# AesPA
+from .module_aespa.aespa_model import inference_aespa
+from .module_aespa.aespanet_models import (
+    AdaptiveMultiAttn_Transformer_v2,
+)
+from .module_aespa.aespanet_models import (
+    VGGDecoder as AESPA_DEC,
+)
+from .module_aespa.aespanet_models import (
+    VGGEncoder as AESPA_VGG,
+)
+
+# CAST
 from .module_cast import net as net_cast
 from .module_cast.cast_model import inference_ucast, load_a_ckpt
+
+# EFDM
 from .module_efdm import net as net_efdm
 from .module_efdm.efdm_model import inference_efdm
+
+# MicroAST
 from .module_microast import net_microAST
 from .module_microast.microast_model import inference_microast
+
+# Neural Neighbor
 from .module_neural_neighbor.neural_neighbor_model import inference_neural_neighbor
+
+# UniST
 from .module_unist.model import video_Style_transfer
 from .module_unist.unist_model import inference_unist
 
@@ -503,6 +528,85 @@ class UniST_Video:
 
         final_result = torch.cat(result, dim=0)
         return (final_result,)
+
+
+class AesPA:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "max": 1024, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        do_crop: bool,
+        size: int,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        pretrained_vgg = torch.load(f"{base_dir}/{VGG_NORM_CONV51_PATH}")
+        encoder = AESPA_VGG(pretrained_vgg)
+        decoder = AESPA_DEC()
+        transformer = AdaptiveMultiAttn_Transformer_v2(
+            in_planes=512,
+            out_planes=512,
+            query_planes=512,
+            key_planes=512 + 256 + 128 + 64,
+        )
+
+        decoder.load_state_dict(
+            torch.load(f"{base_dir}/{AESPA_DEC_PATH}")["state_dict"]
+        )
+        transformer.load_state_dict(
+            torch.load(f"{base_dir}/{AESPA_TRANSFORMER_PATH}")["state_dict"]
+        )
+
+        encoder.eval().to(device)
+        decoder.eval().to(device)
+        transformer.eval().to(device)
+
+        params = {
+            "style_img": style_img.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "encoder": encoder,
+            "decoder": decoder,
+            "transformer": transformer,
+        }
+
+        num_frames = src_img.size(0)
+        pbar = ProgressBar(num_frames)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in tqdm.tqdm(range(num_frames), desc="Generating"):
+                params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = inference_aespa(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
+                pbar.update_absolute(i, num_frames)
+
+        return (torch.cat(result, dim=0),)
 
 
 def serialize_floats(lst: list[float]):

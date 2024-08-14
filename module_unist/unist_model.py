@@ -27,7 +27,7 @@ def inference_unist(
     return output
 
 
-def test_transform(size, crop):
+def test_transform(size, crop, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
     transform_list = []
 
     if crop and size != 0:
@@ -36,7 +36,7 @@ def test_transform(size, crop):
     elif size != 0:
         transform_list.append(transforms.Resize((size, size)))
 
-    transform_list.append(transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]))
+    transform_list.append(transforms.Normalize(mean, std))
 
     transform = transforms.Compose(transform_list)
     # [B, C, H, W]

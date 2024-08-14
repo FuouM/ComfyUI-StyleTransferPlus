@@ -17,3 +17,7 @@ MICROAST_MODULATOR_PATH = "models/microast/modulator_iter_160000.pth.tar"
 UNIST_PATH = "models/unist/UniST_model.pt"
 UNIST_DEC_PATH = "models/unist/dec_r41.pth"
 UNIST_ENC_PATH = "models/unist/vgg_r41.pth"
+
+VGG_NORM_CONV51_PATH = "models/vgg_normalised_conv5_1.pth"
+AESPA_DEC_PATH = "models/aespa/dec_model.pth"
+AESPA_TRANSFORMER_PATH = "models/aespa/transformer_model.pth"
