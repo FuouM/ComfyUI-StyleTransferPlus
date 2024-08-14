@@ -1,5 +1,5 @@
 # ComfyUI-StyleTransferPlus
-Advanced Non-Diffusion-based Style Transfer in ComfyUI
+Advance Non-Diffusion-based Style Transfer in ComfyUI
 
 Click name to jump to workflow
 
@@ -7,7 +7,9 @@ Click name to jump to workflow
 2. [**CAST**](#cast). Paper: [Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning](https://github.com/zyxElsa/CAST_pytorch)
 3. [**EFDM**](#efdm). Paper: [Exact Feature Distribution Matching for Arbitrary Style Transfer and Domain Generalization](https://github.com/YBZh/EFDM)
 4. [**MicroAST**](#microast). Paper: [Towards Super-Fast Ultra-Resolution Arbitrary Style Transfer](https://github.com/EndyWon/MicroAST)
-5. [**UniST**](#unist) : [Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers](https://github.com/NevSNev/UniST)
+5. [**UniST**](#unist). Paper: [Two Birds, One Stone: A Unified Framework for Joint Learning of Image and Video Style Transfers](https://github.com/NevSNev/UniST)
+6. [**AesPA-Net**](#aespa-net). Paper: [Aesthetic Pattern-Aware Style Transfer Networks](https://github.com/Kibeom-Hong/AesPA-Net)
+
 
 [**Extra nodes**](#extra-nodes)
 
@@ -17,13 +19,13 @@ More will come soon
 
 All nodes support batched input (i.e video) but is generally not recommended. One should generate 1 or 2 style frames (start and end), then use [ComfyUI-EbSynth](https://github.com/FuouM/ComfyUI-EbSynth) to propagate the style to the entire video.
 
-|          Neural Neighbor (2020-2022) - Slowest          |          CAST (2022-2023) - Fast          |
-| :-----------------------------------------------------: | :---------------------------------------: |
-| ![neural_neighbor](example_outputs/neural_neighbor.png) |     ![cast](example_outputs/cast.png)     |
-|                 **EFDM (2022) - Fast**                  |        **MicroAST (2023) - Fast**         |
-|            ![efdm](example_outputs/efdm.png)            | ![microast](example_outputs/microast.png) |
-|        **UniST (2023) - Medium - Only squares**         |                   **X**                   |
-|        ![efdm](example_outputs/unist_image.png)         |                     X                     |
+|          Neural Neighbor (2020-2022) - Slowest          |           CAST (2022-2023) - Fast            |
+| :-----------------------------------------------------: | :------------------------------------------: |
+| ![neural_neighbor](example_outputs/neural_neighbor.png) |      ![cast](example_outputs/cast.png)       |
+|                 **EFDM (2022) - Fast**                  |          **MicroAST (2023) - Fast**          |
+|            ![efdm](example_outputs/efdm.png)            |  ![microast](example_outputs/microast.png)   |
+|        **UniST (2023) - Medium - Only squares**         | **AesPA-Net (2023) - Medium - Only squares** |
+|        ![efdm](example_outputs/unist_image.png)         |     ![aespa](example_outputs/aespa.png)      |
 
 ### Neural Neighbor
 
@@ -47,7 +49,7 @@ See more information on the original repository. No model is needed.
 
 Download the CAST and UCAST models in the [Test](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#test) section (Google Drive) (Unzip).
 
-Download the `vgg_normalized` model in the [Train](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#train) section
+Download the `vgg_normalized.pth` model in the [Train](https://github.com/zyxElsa/CAST_pytorch?tab=readme-ov-file#train) section
 
 ```
 models/
@@ -127,8 +129,25 @@ The Video node is "more native" than the Image node for batched images (video) i
 | :-----------------------------------------------------------: | :--------------------------------------------------------------: |
 | [workflow_unist_image.json](workflows/workflow_microast.json) | [workflow_unist_video.json](workflows/workflow_unist_video.json) |
 |        ![wf_unist_image](workflows/wf_unist_image.png)        |     ![wf_microast](example_outputs/example_unist_video.png)      |
-||(Not a workflow-embedded image)|
+|                                                               |                 (Not a workflow-embedded image)                  |
 
+### AesPA-Net
+
+Download models from [Usage](https://github.com/Kibeom-Hong/AesPA-Net?tab=readme-ov-file#usage) section.
+
+For the VGG model, download `vgg_normalised_conv5_1.pth` from https://github.com/pietrocarbo/deep-transfer/tree/master/models/autoencoder_vgg19/vgg19_5
+
+```
+models\aespa\dec_model.pth
+models\aespa\transformer_model.pth
+models\aespa\vgg_normalised_conv5_1.pth
+```
+
+The original authors provided a `vgg_normalised_conv5_1.t7` model, which can only be opened with torchfile, and pyTorch has dropped native support for it. It also doesn't work reliably on Windows.
+
+[workflow_aespa.json](workflows/workflow_aespa.json)
+
+![wf_aespa](workflows/wf_aespa.png)
 
 ## Extra nodes
 
@@ -140,17 +159,18 @@ The Video node is "more native" than the Image node for batched images (video) i
 
 ```
 @inproceedings{zhang2020cast,
-author = {Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
-title = {Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning},
-booktitle = {ACM SIGGRAPH},
-year = {2022}}
+  author = {Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
+  title = {Domain Enhanced Arbitrary Image Style Transfer via Contrastive Learning},
+  booktitle = {ACM SIGGRAPH},
+  year = {2022}
+}
 
 @article{zhang2023unified,
- title={A Unified Arbitrary Style Transfer Framework via Adaptive Contrastive Learning},
- author={Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
- journal={ACM Transactions on Graphics},
- year={2023},
- publisher={ACM New York, NY}
+  title={A Unified Arbitrary Style Transfer Framework via Adaptive Contrastive Learning},
+  author={Zhang, Yuxin and Tang, Fan and Dong, Weiming and Huang, Haibin and Ma, Chongyang and Lee, Tong-Yee and Xu, Changsheng},
+  journal={ACM Transactions on Graphics},
+  year={2023},
+  publisher={ACM New York, NY}
 }
 ```
 
@@ -180,5 +200,16 @@ year = {2022}}
     month     = {October},
     year      = {2023},
     pages     = {23545-23554}
+}
+```
+
+```
+@article{Hong2023AesPANetAP,
+  title={AesPA-Net: Aesthetic Pattern-Aware Style Transfer Networks},
+  author={Kibeom Hong and Seogkyu Jeon and Junsoo Lee and Namhyuk Ahn and Kunhee Kim and Pilhyeon Lee and Daesik Kim and Youngjung Uh and Hyeran Byun},
+  journal={ArXiv},
+  year={2023},
+  volume={abs/2307.09724},
+  url={https://api.semanticscholar.org/CorpusID:259982728}
 }
 ```

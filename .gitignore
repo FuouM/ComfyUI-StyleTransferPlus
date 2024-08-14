@@ -1,6 +1,8 @@
+# Checkpoint files
 *.pth
 *.tar
 *.pt
+*.t7
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
