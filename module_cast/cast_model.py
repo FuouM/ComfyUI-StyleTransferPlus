@@ -1,10 +1,24 @@
 import torch
 
-def load_a_ckpt(ckpt_path: str):
-    state_dict = torch.load(ckpt_path)
-    if hasattr(state_dict, "_metadata"):
-        del state_dict._metadata
-    return state_dict
+from . import net
+
+
+class MODEL_CAST:
+    def __init__(
+        self, vgg_path: str, net_ae_path: str, net_dec_b_path: str, device
+    ) -> None:
+        vgg = net.vgg
+        vgg.load_state_dict(torch.load(vgg_path))
+        vgg = torch.nn.Sequential(*list(vgg.children())[:31])
+
+        self.netAE = net.ADAIN_Encoder(vgg)
+        self.netDec_B = net.Decoder()
+
+        self.netAE.load_state_dict(load_a_ckpt(net_ae_path))
+        self.netDec_B.load_state_dict(load_a_ckpt(net_dec_b_path))
+
+        self.netAE.to(device).eval()
+        self.netDec_B.to(device).eval()
 
 
 def inference_ucast(
@@ -25,3 +39,10 @@ def inference_ucast(
         torch.cuda.empty_cache()
 
     return fake_B
+
+
+def load_a_ckpt(ckpt_path: str):
+    state_dict = torch.load(ckpt_path)
+    if hasattr(state_dict, "_metadata"):
+        del state_dict._metadata
+    return state_dict
