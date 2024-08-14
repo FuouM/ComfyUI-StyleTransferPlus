@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 
+from . import net
 from .function import (
     adaptive_instance_normalization,
     adaptive_mean_normalization,
@@ -10,6 +11,20 @@ from .function import (
     exact_feature_distribution_matching,
     histogram_matching,
 )
+
+
+class MODEL_EFDM:
+    def __init__(self, dec_path: str, vgg_path: str, device) -> None:
+        self.decoder = net.decoder
+        vgg = net.vgg
+
+        self.decoder.load_state_dict(torch.load(dec_path))
+        vgg.load_state_dict(torch.load(vgg_path))
+
+        self.vgg = torch.nn.Sequential(*list(vgg.children())[:31])
+
+        self.vgg.eval().to(device)
+        self.decoder.eval().to(device)
 
 
 def inference_efdm(

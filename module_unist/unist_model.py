@@ -1,7 +1,34 @@
 import torch
+import torch.nn as nn
 import torchvision.transforms as transforms
 
-from .model import video_Style_transfer
+from .models import Transformer
+
+
+class video_Style_transfer(nn.Module):
+    def __init__(self, ckpt_path: str, encoder_path: str, decoder_path: str):
+        super(video_Style_transfer, self).__init__()
+        self.ckpt_path = ckpt_path
+        self.model = Transformer(encoder_path, decoder_path)
+        self.load_weights()
+
+    def load_weights(self):
+        # print("Loading model from checkpoint")
+        ckpt = torch.load(self.ckpt_path, map_location="cpu")
+        self.model.load_state_dict(get_keys(ckpt, "model"), strict=False)
+
+    def forward(
+        self,
+        content_frames,
+        style_images,
+        content_type="image",
+        id_loss="transfer",
+        tab=None,
+    ):
+        transfer_result = self.model.forward(
+            content_frames, style_images, content_type, id_loss, tab
+        )
+        return transfer_result
 
 
 def inference_unist(
@@ -63,3 +90,10 @@ def match_shape(a: torch.Tensor, b: torch.Tensor):
         return torch.cat([a.repeat(repeat_factor, 1, 1, 1), a[:remainder]], dim=0)
     else:  # B_a > B_b
         return a[:B_b]
+
+
+def get_keys(d, name):
+    if "state_dict" in d:
+        d = d["state_dict"]
+    d_filt = {k[len(name) + 1 :]: v for k, v in d.items() if k[: len(name)] == name}
+    return d_filt
