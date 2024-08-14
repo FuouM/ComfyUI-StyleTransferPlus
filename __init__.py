@@ -1,4 +1,15 @@
-from .run import NeuralNeighbor, CAST, EFDM, MicroAST, UniST, UniST_Video, AesPA, TSSAT
+from .run import (
+    AesFA,
+    AesFAStyleBlend,
+    CAST,
+    EFDM,
+    TSSAT,
+    AesPA,
+    MicroAST,
+    NeuralNeighbor,
+    UniST,
+    UniST_Video,
+)
 from .run_extra import CoralColorTransfer
 
 NODE_CLASS_MAPPINGS = {
@@ -11,6 +22,8 @@ NODE_CLASS_MAPPINGS = {
     "UniST_Video": UniST_Video,
     "AesPA": AesPA,
     "TSSAT": TSSAT,
+    "AESFA": AesFA,
+    "AesFAStyleBlend": AesFAStyleBlend,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -23,6 +36,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "UniST_Video": "UniST Video",
     "AesPA": "AesPA-Net",
     "TSSAT": "TSSAT",
+    "AESFA": "AESFA",
+    "AesFAStyleBlend": "AesFA Styles Blending",
 }
 
 

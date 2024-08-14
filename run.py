@@ -12,6 +12,7 @@ import tqdm
 from comfy.utils import ProgressBar
 
 from .constants import (
+    AESFA_PATH,
     AESPA_DEC_PATH,
     AESPA_TRANSFORMER_PATH,
     CAST_DEFAULT,
@@ -31,6 +32,13 @@ from .constants import (
     UNIST_ENC_PATH,
     UNIST_PATH,
     VGG_NORM_CONV51_PATH,
+)
+
+# AesFA
+from .module_aesfa.aesfa_model import (
+    MODEL_AESFA,
+    inference_aesfa,
+    inference_aesfa_style_blend,
 )
 
 # AesPA
@@ -562,7 +570,7 @@ class TSSAT:
                 ),
                 "size": (
                     "INT",
-                    {"default": 512, "min": 1, "max": 1024, "step": 1},
+                    {"default": 512, "min": 1, "step": 1},
                 ),
                 "max_iter": (
                     "INT",
@@ -610,6 +618,128 @@ class TSSAT:
             for i in range(num_frames):
                 params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
                 res_tensor = inference_tssat(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
+
+        return (torch.cat(result, dim=0),)
+
+
+class AesFA:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_img": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_img: torch.Tensor,
+        do_crop: bool,
+        size: int,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_img.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        model = MODEL_AESFA(
+            checkpoint_path=f"{base_dir}/{AESFA_PATH}",
+            device=device,
+        )
+
+        params = {
+            "style_img": style_img.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "model": model,
+        }
+
+        num_frames = src_img.size(0)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in range(num_frames):
+                params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = inference_aesfa(**params)
+                result.append(res_tensor.permute(0, 2, 3, 1))
+
+        return (torch.cat(result, dim=0),)
+
+
+class AesFAStyleBlend:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "src_img": ("IMAGE",),
+                "style_hi": ("IMAGE",),
+                "style_lo": ("IMAGE",),
+                "do_crop": (
+                    "BOOLEAN",
+                    {"default": False},
+                ),
+                "size": (
+                    "INT",
+                    {"default": 512, "min": 1, "step": 1},
+                ),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("out_img",)
+    FUNCTION = "todo"
+    CATEGORY = "StyleTransferPlus"
+
+    def todo(
+        self,
+        src_img: torch.Tensor,
+        style_hi: torch.Tensor,
+        style_lo: torch.Tensor,
+        do_crop: bool,
+        size: int,
+    ):
+        print(f"{src_img.shape=}")
+        print(f"{style_hi.shape=}")
+        print(f"{style_lo.shape=}")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        model = MODEL_AESFA(
+            checkpoint_path=f"{base_dir}/{AESFA_PATH}",
+            device=device,
+        )
+
+        params = {
+            "style_hi": style_hi.permute(0, 3, 1, 2),
+            "style_lo": style_lo.permute(0, 3, 1, 2),
+            "device": device,
+            "size": size,
+            "do_crop": do_crop,
+            "model": model,
+        }
+
+        num_frames = src_img.size(0)
+
+        result: list[torch.Tensor] = []
+        with torch.no_grad():
+            for i in range(num_frames):
+                params["src_img"] = src_img[i].unsqueeze(0).permute(0, 3, 1, 2)
+                res_tensor = inference_aesfa_style_blend(**params)
                 result.append(res_tensor.permute(0, 2, 3, 1))
 
         return (torch.cat(result, dim=0),)
